@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Scrap {
+  id  Int @id @default(autoincrement())
+  uri String @unique
+  service String
+  xpath String
+  endsOn DateTime
+  notifyEvery Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
