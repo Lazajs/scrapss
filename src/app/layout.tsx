@@ -37,6 +37,9 @@ export default function RootLayout({
       <LayoutProviders>
         <body className="min-h-screen bg-gray-50">
           <main className="container-custom py-8">{children}</main>
+          <footer className="text-center text-xs text-gray-400 opacity-50 mt-8 mb-4">
+            Only for educational purposes
+          </footer>
         </body>
       </LayoutProviders>
     </html>
