@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^1.2.2",
+    "@tanstack/react-query": "^5.67.3",
     "next": "15.2.1",
+    "playwright": "^1.51.0",
     "prisma": "^6.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -5,11 +5,16 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 
 const schema = z.object({
-  uri: z.string(),
-  endsOn: z.string(),
-  notifyEvery: z.number(),
-  service: z.string(),
-  xpath: z.string()
+  uri: z
+    .string()
+    .url({ message: 'Please enter a valid URL' })
+    .min(1, { message: 'URI is required' }),
+  endsOn: z.string().min(1, { message: 'End date is required' }),
+  notifyEvery: z
+    .number({ message: 'Notify every is required' })
+    .min(1, { message: 'Notification interval must be at least 1 hour' }),
+  service: z.string().min(1, { message: 'Service name is required' }),
+  xpath: z.string().min(1, { message: 'XPath query is required' })
 })
 
 export type CreateScrapActionError = {
@@ -35,13 +40,11 @@ export async function createScrap(
 ): Promise<CreateScrapActionState> {
   const { data, error } = schema.safeParse({
     uri: formData.get('uri') as string,
-    endsOn: new Date(formData.get('endsOn') as string).toISOString(),
+    endsOn: formData.get('endsOn') as string,
     notifyEvery: parseInt(formData.get('notifyEvery') as string),
     service: formData.get('service') as string,
     xpath: formData.get('xpath') as string
   })
-
-  console.log(data)
 
   if (error) {
     return {
@@ -50,8 +53,15 @@ export async function createScrap(
     }
   }
 
+  const parsedData = {
+    ...data,
+    endsOn: new Date(data.endsOn).toISOString()
+  }
+
+  // do scrapping
+  // const value = await doScraping(data.uri, data.xpath)
   try {
-    await client.scrap.create({ data })
+    await client.scrap.create({ data: { ...parsedData, value: 'test' } })
     revalidatePath('/')
   } catch (e) {
     if (e instanceof Error) {
@@ -70,5 +80,17 @@ export async function getAllScraps(): Promise<Scrap[]> {
     if (e instanceof Error) {
       throw new Error(`Failed to fetch scraps: ${e.message}`)
     } else throw new Error('Failed to fetch scraps')
+  }
+}
+
+export async function deleteScrap(id: number): Promise<null> {
+  try {
+    await client.scrap.delete({ where: { id } })
+    revalidatePath('/')
+    return null
+  } catch (e) {
+    if (e instanceof Error) {
+      throw new Error(`Failed to delete scrap: ${e.message}`)
+    } else throw new Error('Failed to delete scrap')
   }
 }

@@ -16,4 +16,6 @@ model Scrap {
   notifyEvery Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  lastCheckedAt DateTime
+  value String 
 }
