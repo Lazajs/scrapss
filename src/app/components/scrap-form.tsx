@@ -1,12 +1,12 @@
 'use client'
 
 import { useActionState } from 'react'
-import { createScrap } from '@/app/actions/db-scraps'
 import { Input } from './input'
+import { doScrapping } from '../actions/scrapping'
 
 export function ScrapForm() {
   const [createState, createAction, createIsPending] = useActionState(
-    createScrap,
+    doScrapping,
     {}
   )
 
